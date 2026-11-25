@@ -1,0 +1,66 @@
+{
+  "qq": {
+    "appId": "YOUR_APPID",
+    "appSecret": "YOUR_SECRET",
+    "c2cOpenid": "",
+    "groupOpenid": ""
+  },
+  "student": {
+    "name": "学生",
+    "grade": "高二",
+    "city": "",
+    "subjects": [
+      "语文",
+      "数学",
+      "英语",
+      "物理",
+      "化学",
+      "生物",
+      "政治",
+      "历史",
+      "地理"
+    ],
+    "examNote": ""
+  },
+  "study": {
+    "focusMinutes": 25,
+    "breakMinutes": 5,
+    "studyWindows": [
+      [
+        "19:00",
+        "22:30"
+      ],
+      [
+        "12:30",
+        "14:00"
+      ]
+    ],
+    "sleepTarget": "23:30",
+    "wakeTarget": "06:40"
+  },
+  "limits": {
+    "entertainmentWarnMinutes": 30,
+    "maxProactivePerDay": 12
+  },
+  "tutor": {
+    "reviewDays": [
+      1,
+      3,
+      7
+    ],
+    "quizSize": 3,
+    "quizTime": "19:05",
+    "quizSubjects": [
+      "数学",
+      "物理",
+      "化学",
+      "生物",
+      "英语",
+      "语文"
+    ]
+  },
+  "exams": {
+    "printRemindWeekday": 6,
+    "packDays": 3
+  }
+}

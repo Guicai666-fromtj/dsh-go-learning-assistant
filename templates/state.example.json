@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "student": {
+    "name": "学生",
+    "grade": "高二",
+    "school": "",
+    "targetUniversity": "",
+    "examDate": "2028-06-07"
+  },
+  "debts": [],
+  "pending": {}
+}

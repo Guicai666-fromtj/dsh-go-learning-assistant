@@ -1,0 +1,37 @@
+# 个人数据：不进仓库
+data/
+mem/
+kb/mistakes.jsonl
+kb/mistakes.jsonl.*
+kb/weakpoints.md
+kb/topics.json
+kb/prereq.json
+kb/exams/
+kb/notes/*.md
+!kb/notes/_规范.md
+!kb/notes/_扒课SOP.md
+kb/notes/README.md
+state.json
+config.json
+ops.json
+logs/
+reports/
+backups/
+backup-*/
+tmp/
+vendor/
+收件箱/
+*.bak-*
+*.log
+
+# 临时文件
+*.wav
+*.mp3
+*.m4a
+*.jpg
+*.jpeg
+*.png
+
+# 空模板必须进仓库（上面的 data/ mem/ 规则会误伤 templates/ 下的同名目录）
+!templates/data/
+!templates/mem/
