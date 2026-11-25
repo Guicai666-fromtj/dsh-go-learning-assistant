@@ -1,13 +1,14 @@
-# B站扒网课 SOP（2026-11-25 定，学生点头）
+# B站扒网课 SOP（2026-11-25）
 
 目标：把一数等 UP 的网课扒成「能用、可溯源、可检索」的知识笔记，入 DeepTutor「数学笔记」。
+DeepTutor 是香港大学 HKUDS 的开源项目（https://github.com/HKUDS/DeepTutor，文档 https://docs.deeptutor.info/zh-cn/），**本包不自带**，要自己装并配 embedding；只看笔记不建库的话可以跳过第 6 节。安装见 `AGENTS.md` §8.0。
 
 ## 0. 工具位置
-- bili-watch：`/root/.dsh/profiles/web/node_modules/dsh-bili-watch/`（命令都是 `node tools/look.mjs <cmd>`）
-- SenseVoice 转写：`/opt/python/bin/python /root/学习助手/bin/asr-sensevoice.py`（App 自带模型，离线，约 4–5 倍实时）
-- yt-dlp：`/opt/python/bin/yt-dlp`（pip 装的；bili-watch 自带 ytdlp 下载要 curl，本机没 curl）
-- 模型：`/root/.dsh/speech-to-text/sensevoice/models/sensevoice-onnx/`（model.int8.onnx + tokens.txt）
-- 成品：`/root/学习助手/kb/notes/`；入库脚本说明见 notes/README.md
+- bili-watch 插件：App 里启用后，工具名 `bili_watch`；需要跑它的 node 命令时，目录在 `$DSH_HOME/profiles/web/node_modules/dsh-bili-watch/`（下面命令都是在那个目录里 `node tools/look.mjs <cmd>`）
+- SenseVoice 转写：本包 `bin/asr-sensevoice.py`；Python 用系统 `python3` 或 `$DSH_PYTHON`（`/opt/python/bin/python` 是常见位置），App 自带模型、离线，约 4–5 倍实时
+- yt-dlp：`pip install yt-dlp`，装完在 PATH 里就能被脚本找到（脚本还会试 `/opt/python/bin/yt-dlp`）
+- 模型：`$DSH_HOME/speech-to-text/sensevoice/models/sensevoice-onnx/`（model.int8.onnx + tokens.txt，启用 App「语音输入」后自动下）
+- 成品：本包 `kb/notes/`（相对路径，`pwd` 核对在项目根）
 
 ## 1. 选源
 - `node tools/look.mjs search 一数 数列 --limit 10`，或按已知 BV
@@ -35,16 +36,22 @@
 - 2500–4500 字，Unicode 数学符号，禁 LaTeX/`$$`
 - 视频没讲、课本要考的标「课本补充」；自编例题标注
 
-## 6. 入库
-1. 拷到 `/root/deeptutor-test/data/knowledge_bases/数学笔记/raw/`
-2. 起嵌入服务（如重启过）：`setsid nohup /opt/python/bin/python /tmp/embed_server.py >/tmp/embed_server.log 2>&1 < /dev/null &`
-3. `cd /root/deeptutor-test && /opt/python/bin/deeptutor kb add 数学笔记 -d 文件1 -d 文件2 …`（多文件要多个 -d）
-4. `deeptutor kb search 数学笔记 "关键词"` 验证能检索
-5. 更新 `kb/notes/README.md`、`kb/formulas/math.md`；记流水 `node bin/mem.mjs add`
+## 6. 入库（需要先装好 DeepTutor，见 AGENTS.md §8.0）
+
+1. 确认 DeepTutor 装好且在跑：`deeptutor --version`、`deeptutor doctor`（不在 PATH 就先 `python -m deeptutor`，还不行回去装）
+2. 找到数据目录：默认 `~/deeptutor`，`DEEPTUTOR_HOME` 或 `deeptutor init` 时改过就以那个为准；不确定就问用户或 `deeptutor --help`
+3. 入库（**必须先 cd 到数据目录**，deeptutor 认当前目录）：
+   ```sh
+   cd <DeepTutor 数据目录>
+   deeptutor kb add 数学笔记 -d 笔记1.md -d 笔记2.md   # 一个文件一个 -d，不能当位置参数
+   deeptutor kb search 数学笔记 "关键词"                # 验收能检索
+   ```
+4. 更新 `kb/formulas/math.md` 等索引文件；记流水 `node bin/mem.mjs add`
 
 ## 坑（血泪）
-- deeptutor 认当前目录：不在 /root/deeptutor-test 跑会另建空库
-- 嵌入服务 8010 没起 → kb add 报 `Cannot reach embedding API`
-- `pkill -f embed_server.py` 会把自己 shell 一起杀，用 PID
+
+- `deeptutor` 认当前目录：不在数据目录跑会另建空库
+- 没配 embedding / 后端没起 → kb add 报 `Cannot reach embedding API`：回 §8.0 配，别硬跑
+- 手机重启后 DeepTutor 不会自己起，先 `deeptutor start` 再入库
 - 字幕错误：建系→间隙、θ→C塔、焦点→交点、k₁k₂=−1 丢负号、aₙ→AN
-- bili-watch 的 whisper 环境已删（2026-11-25 学生定），别再用 `look.mjs asr`
+- bili-watch 的 whisper 环境已删（2026-11-25），别再用 `look.mjs asr`

@@ -154,6 +154,19 @@ node bin/pet.mjs status|tick|pat|add-exp --n 10 --why 小测
 
 他说「这个网课不错，扒一下 / 收进知识库」时走这条。详细流程见 `kb/notes/_扒课SOP.md`，格式硬规矩见 `kb/notes/_规范.md`。要点：
 
+### 8.0 DeepTutor：知识库那步要它，先带用户装好
+
+DeepTutor 是香港大学 HKUDS 的开源项目（仓库 <https://github.com/HKUDS/DeepTutor>，文档 <https://docs.deeptutor.info/zh-cn/>）。**本包不自带**：笔记照写不误，只有「入库 / 检索」这步需要它。别偷偷装——先说清占多少磁盘、大概多久、怎么回滚，等用户点头再动。
+
+1. **先查**：`deeptutor --version`；不在 PATH 就 `python -m deeptutor --version`。已经装了跳第 3 步。
+2. **装**：`mkdir -p ~/deeptutor && cd ~/deeptutor && python -m pip install "deeptutor[full]"`；装完 `deeptutor init` 交互式配（后端端口默认 8001、前端 3782、LLM 提供商、embedding、搜索）。
+3. **验**：`deeptutor doctor` 四项必过（LLM configuration / LLM credentials / LLM endpoint / Runtime storage），再 `deeptutor doctor --online` 真打一次；有 FAIL 先修再往下。
+4. **配 embedding**：不配就建不了知识库。设置 → 模型与服务里加 embedding（本地 Ollama `nomic-embed-text`，或 OpenAI 兼容 `/v1/embeddings`）；手机跑不动本地模型就先用托管 API 把流程跑通。
+5. **起服务**：`deeptutor start`（后端 8001 + 前端 3782，默认地址 <http://127.0.0.1:3782>）；proot 环境别指望 systemd，后台跑用 nohup。
+6. **数据**：全在 `~/deeptutor/data/`（配置在 `data/user/settings/`），要持久化，升级前先备份；换位置用 `DEEPTUTOR_HOME` 或 `deeptutor start --home`。
+7. **建库**：`deeptutor kb create 数学笔记 --doc 教材.pdf`（具体 flag 以 `--help` 为准），再 `deeptutor kb set-default 数学笔记`。
+8. 装完把路径、端口、embedding 配置记进 `ops.json` 或流水；装不通就直说，别硬撑。
+
 ### 8.1 环境准备（新机器必做一次）
 
 | 能力 | 依赖 | 装法 / 位置 |
@@ -163,7 +176,7 @@ node bin/pet.mjs status|tick|pat|add-exp --n 10 --why 小测
 | 下音频 | `yt-dlp` + `ffmpeg` | `pip install yt-dlp`；`apt-get install -y ffmpeg` |
 | 抽帧看图 | 同 bili-watch（内部 ffmpeg） | `node tools/look.mjs sheet BV --at 00:05,00:20 --out /tmp/x.jpg` |
 | 印刷体 OCR（可选） | `rapidocr_onnxruntime` | `pip install rapidocr_onnxruntime` |
-| 知识库入库 | DeepTutor | 见 §8.5 |
+| 知识库入库 | DeepTutor（外挂，需自装） | 见 §8.0、§8.5 |
 
 **SenseVoice 从哪来**：dsh-go App 自带「语音输入」插件，启用后会下载 SenseVoice 模型（int8，约 231MB），落在：
 
@@ -207,19 +220,22 @@ ls $DSH_HOME/speech-to-text/sensevoice/models/sensevoice-onnx/   # 两个文件�
 
 ### 8.5 入库 DeepTutor
 
+没装先按 §8.0 装好并配 embedding，再走这步。
+
 ```sh
-cd <DeepTutor 数据目录>            # 必须 cd，deeptutor 认当前目录
+cd <DeepTutor 数据目录>            # 必须 cd（默认 ~/deeptutor），deeptutor 认当前目录
 deeptutor kb add 数学笔记 -d 笔记1.md -d 笔记2.md    # 每个文件一个 -d
-deeptutor kb search 数学笔记 "关键词"                 # 验收
+deeptutor kb search 数学笔记 "关键词"                 # 验收能检索
 ```
 
-- 嵌入服务要先起（本项目用本地 bge-small-zh + fastembed，OpenAI 兼容 /v1/embeddings）；连不上会报 `Cannot reach embedding API`。
-- 手机重启后嵌入服务不会自己起，记得重新拉起。
+- 报 `Cannot reach embedding API`：embedding 没配或后端没起 → 回 §8.0 第 3–4 步，别硬跑。
+- 手机重启后 DeepTutor 不会自己起，先 `deeptutor start` 再入库。
 
 ## 9. 常见坑
 
 - `bili_watch` 只认视频自带字幕；本机没有系统级 ASR，别以为能自动识音。
 - 自动字幕错字多：建系→间隙、θ→C塔、焦点→交点、下标丢失、负号被吞。
+- 没装 DeepTutor 就别硬跑 `kb add`，先按 §8.0 装好；本包扒课、成文、看板书都不需要它。
 - `deeptutor` 不在正确目录会另建空库；多个文件要重复 `-d`，不能当位置参数。
 - `pkill -f 脚本名` 会连执行它的 shell 一起杀（命令行含同样字符串）。
 - 手机存储有限：临时音频/帧图用完就删；不要把模型和导出文件堆在仓库里。

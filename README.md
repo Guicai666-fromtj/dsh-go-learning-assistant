@@ -78,7 +78,7 @@ sh install.sh /root/学习助手            # 只覆盖 bin/、docs/、笔记规
 - **SenseVoice** + `sherpa-onnx`：本机离线语音转写（模型来自 dsh-go App 的「语音输入」插件，约 231MB，随 App 下载，不用另外找模型）
 - `yt-dlp` + `ffmpeg`：下音频、转码
 - 可选 `rapidocr_onnxruntime`：PPT/印刷体 OCR
-- DeepTutor：笔记入库做 RAG（可选）
+- DeepTutor：笔记入库做 RAG（可选，不自带；港大 HKUDS 开源项目 <https://github.com/HKUDS/DeepTutor>，装法见 `AGENTS.md` §8.0）
 
 没有系统级 ASR 也能干活：新版视频优先用官方字幕，老视频才转写；转写数字/下标会错，必须按数学还原，板书看不清就抽帧看图。
 

@@ -21,7 +21,7 @@ description: 把 B 站网课（尤其数学/理科）扒成结构化笔记并入
 3. **核对**：数字、下标、字母按数学常识还原（「十3」=13、「AN」=aₙ）；字幕错得离谱的句子不写进笔记。
 4. **写**：H1 + 每节「核心 / 怎么考 / 例 / 易错」；每个知识点标 `[来源 BV... P... mm:ss]`；文末覆盖清单 + 来源表。禁用 LaTeX，数学用 Unicode。
 5. **质检**：每节有来源；无 LaTeX；覆盖清单如实（缺哪节写哪节）；自编例题标注。
-6. **入库（可选）**：`cd <DeepTutor 数据目录> && deeptutor kb add <库名> -d 文件1 -d 文件2`，再 `deeptutor kb search` 验收。
+6. **入库（可选）**：`cd <DeepTutor 数据目录> && deeptutor kb add <库名> -d 文件1 -d 文件2`，再 `deeptutor kb search` 验收。没装 DeepTutor 先按 `AGENTS.md` §8.0 装好并配 embedding。
 
 ## 红线
 
