@@ -44,11 +44,11 @@ sh install.sh
 **新增脚本**
 
 - `chat-watch.mjs` / `chat-match.mjs`：QQ 聊天监听与匹配（可选）
-- `balance-watch.mjs`：模型余额看板
-- `group-pet.mjs`：群桌宠
 - `phone.mjs`：手机前台/操控辅助
 - `render-summary-map.py`：复盘图渲染
 - `backup.sh` / `rollback.sh`：备份与回滚
+
+**没带的**：模型余额看门狗（`balance-watch`）、群桌宠（`group-pet`）——只服务特定部署，不进通用包。
 
 **去掉旧的 `bili.mjs` / `dt.mjs` / `embed_server.py`**
 
